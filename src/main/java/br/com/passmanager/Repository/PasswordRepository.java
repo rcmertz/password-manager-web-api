@@ -8,13 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PasswordRepository extends JpaRepository<Password, Integer> {
-
-    @Modifying
-    @Query("UPDATE Password password " +
-            "SET password.ativo = false " +
-            "WHERE password.id = :password")
-    public void exlcuir(@Param("password") Long idPassword);
-
+public interface PasswordRepository extends JpaRepository<Password, Long> {
 
 }

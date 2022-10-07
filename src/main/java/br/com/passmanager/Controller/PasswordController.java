@@ -2,6 +2,7 @@ package br.com.passmanager.Controller;
 
 import br.com.passmanager.Entity.Password;
 import br.com.passmanager.Service.PasswordService;
+import br.com.passmanager.dto.PasswordResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class PasswordController {
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Password password) {
         try {
-            this.passwordService.insert(password);
-            return ResponseEntity.ok().body("Senha cadastrada com sucesso.");
+            Password pass = this.passwordService.insert(password);
+            return ResponseEntity.ok().body(PasswordResponse.buildSuccess(pass));
         }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(PasswordResponse.buildFailed(e.getMessage()));
         }
     }
 
@@ -38,17 +39,17 @@ public class PasswordController {
             this.passwordService.update(idPassword, password);
             return ResponseEntity.ok().body("Senha atualizada com sucesso.");
         }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(PasswordResponse.buildFailed(e.getMessage()));
         }
     }
 
-    @PutMapping("/excluir/{idPassword}")
-    public ResponseEntity<?> excluir(@PathVariable Long idPassword, @RequestBody Password password) {
+    @DeleteMapping("/{idPassword}")
+    public ResponseEntity<?> delete(@PathVariable Long idPassword) {
         try {
-            this.passwordService.excluir(idPassword, password);
+            this.passwordService.delete(idPassword);
             return ResponseEntity.ok().body("Senha excluida com sucesso.");
         }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(PasswordResponse.buildFailed(e.getMessage()));
         }
     }
 }
