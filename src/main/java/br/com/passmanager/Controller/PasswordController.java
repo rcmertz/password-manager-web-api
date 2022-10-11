@@ -19,6 +19,11 @@ public class PasswordController {
     @Autowired
     PasswordService passwordService;
 
+    @RequestMapping("{id}")
+    public ResponseEntity<?> findById(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(passwordService.findById(id));
+    }
+
     @GetMapping
     public ResponseEntity<List<Password>> getAllRequests(){
         return ResponseEntity.status(HttpStatus.OK).body(passwordService.findAll());

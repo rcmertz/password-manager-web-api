@@ -16,6 +16,9 @@ public class PasswordService {
     @Autowired
     PasswordRepository passwordRepository;
 
+    public Password findById(Long id){
+        return this.passwordRepository.findById(id).orElse(new Password());
+    }
     public List<Password> findAll(){
         return passwordRepository.findAll();
     }

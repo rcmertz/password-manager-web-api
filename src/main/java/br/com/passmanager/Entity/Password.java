@@ -26,6 +26,6 @@ public class Password {
     private String password;
 
     @Column(name = "descricao", nullable = false, length = 90)
-    private String decricao;
+    private String descricao;
 }
 
