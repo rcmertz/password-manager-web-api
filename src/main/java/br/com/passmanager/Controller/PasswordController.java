@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @CrossOrigin
@@ -19,6 +21,12 @@ public class PasswordController {
     @Autowired
     PasswordService passwordService;
 
+    public Password unencrypt(Password password){
+        byte[] decoded = Base64.getDecoder().decode(password.getPassword());
+        String decodedString = new String(decoded);
+        password.setPassword(decodedString);
+        return password;
+    }
     @RequestMapping("{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Long id){
         return ResponseEntity.status(HttpStatus.OK).body(passwordService.findById(id));
@@ -26,12 +34,15 @@ public class PasswordController {
 
     @GetMapping
     public ResponseEntity<List<Password>> getAllRequests(){
-        return ResponseEntity.status(HttpStatus.OK).body(passwordService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(passwordService.findAll().stream().map(this::unencrypt).collect(Collectors.toList()));
     }
 
     @PostMapping
     public ResponseEntity<?> insert(@RequestBody Password password) {
         try {
+            String original = password.getPassword();
+            String encoded = Base64.getEncoder().encodeToString(original.getBytes());
+            password.setPassword(encoded);
             Password pass = this.passwordService.insert(password);
             return ResponseEntity.ok().body(PasswordResponse.buildSuccess(pass));
         }catch (Exception e) {
